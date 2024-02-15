@@ -1,0 +1,66 @@
+
+<nz-spin [nzSpinning]="loading" nzTip="Loading orders..." >
+  <app-utilization-card></app-utilization-card>
+  <h1>Kitchen Display</h1>
+  <div class="drag-drop-layout">
+   
+    <div class="drag-drop-column">
+      <h3 class="center-text">Pending Orders</h3>
+      <div cdkDropList #pendingList="cdkDropList" [cdkDropListData]="pending" [cdkDropListConnectedTo]="[preparingList]" class="drop-list" (cdkDropListDropped)="onDrop($event, 'pending')">
+        <app-order-card 
+          *ngFor="let order of pending order" 
+          [order]="order" 
+          cdkDrag 
+          [cdkDragDisabled]="isOrderLoading(order)" 
+          [loading]="isOrderLoading(order)"
+          (cdkDragStarted)="onDragStart()"
+          (cdkDragEnded)="onDragEnd()">
+        </app-order-card>
+      </div>
+    </div>
+  
+    
+    <div class="drag-drop-column">
+      <h3 class="center-text">Being Prepared</h3>
+      <div cdkDropList #preparingList="cdkDropList" [cdkDropListData]="preparing" [cdkDropListConnectedTo]="[pendingList, readyList]" class="drop-list" (cdkDropListDropped)="onDrop($event, 'preparing')">
+        <app-order-card 
+          *ngFor="let order of preparing order" 
+          [order]="order" 
+          cdkDrag 
+          [cdkDragDisabled]="isOrderLoading(order)" 
+          [loading]="isOrderLoading(order)"
+          (cdkDragStarted)="onDragStart()"
+          (cdkDragEnded)="onDragEnd()">
+        </app-order-card>
+      </div>
+    </div>
+  
+    
+    <div class="drag-drop-column">
+      <h3 class="center-text">Ready To Serve</h3>
+      <div cdkDropList #readyList="cdkDropList" [cdkDropListData]="ready" [cdkDropListConnectedTo]="[preparingList]" class="drop-list" (cdkDropListDropped)="onDrop($event, 'ready')">
+        <app-order-card 
+          *ngFor="let order of ready order" 
+          [order]="order" 
+          cdkDrag 
+          [cdkDragDisabled]="isOrderLoading(order)" 
+          [loading]="isOrderLoading(order)"
+          (cdkDragStarted)="onDragStart()"
+          (cdkDragEnded)="onDragEnd()">
+        </app-order-card>
+      </div>
+    </div>
+  
+    
+    <div class="drag-drop-column">
+      <h3 class="center-text">Served/Delivered</h3>
+      <div class="drop-list">
+        <app-order-card 
+          *ngFor="let order of served order" 
+          [order]="order" 
+          [loading]="false">
+        </app-order-card>
+      </div>
+    </div>
+  </div>
+</nz-spin>

@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const chef_controller_1 = require("../controllers/chef.controller");
+const chefRouter = (0, express_1.Router)();
+chefRouter.post('/check-in', chef_controller_1.chefCheckIn);
+chefRouter.post('/check-out', chef_controller_1.chefCheckOut);
+chefRouter.get('/active', chef_controller_1.getActiveChefs);
+chefRouter.post('/efficiency', chef_controller_1.postChefEfficiency);
+exports.default = chefRouter;

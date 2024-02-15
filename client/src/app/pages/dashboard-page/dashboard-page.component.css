@@ -1,0 +1,248 @@
+h1 {
+  text-align: center;
+  color: black;
+  margin-bottom: 20px;
+  font-size: 40px;
+  font-weight: bold;
+}
+.widthClass{
+  width: 75% !important;
+  /* border: 1px solid red; */
+  position: relative;
+}
+.stats-container {
+  /* display: flex; */
+  position: absolute;
+  display: grid;
+  grid-template-columns: auto auto auto auto ;
+  grid-row-gap: 15px;
+  grid-column-gap: 10px;
+  justify-content: space-between;
+  color: green;
+  size: 30px;
+  width:50%;
+  margin-left: 10px;
+  /* border: 1px solid black; */
+ 
+}
+/* .stat-item {
+  text-align: center;
+  padding-bottom: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  margin-left: 20px;
+  margin-right: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+} */
+
+.stat-item {
+  text-align: center;
+  padding: 30px ;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  /* margin: 0 20px; */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 200px; 
+  height: 100px;
+
+
+}
+
+.label {
+  /* margin: 0 auto; */
+  font-weight: bold;
+  color:green;
+  position: absolute;
+  top: 0;  
+  right: 10px;
+  /* text-align: center; */
+
+}
+.label1 {
+  font-weight: bold;
+  color:green;
+
+}
+
+
+.value {
+  font-size: 13px;
+  color:black;
+  align-self:self-end; 
+  font-weight: bold;
+  
+  
+ 
+}
+.orderNumber{
+  font-size: 15px;
+  color:black;
+  align-self:self-end; 
+  position: absolute;
+  bottom: 0;
+  right: 10px;
+  font-size: 24px;
+}
+
+.stat-icon {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  font-size: 24px;
+}
+
+ .chef-container {
+  display: flex;
+  flex-wrap: wrap;
+  color: green;
+  width: 100%;
+} 
+
+h2 {
+  text-align: left;
+  color: black;
+  font-size: 30px;
+  margin-top: 8PX;
+  font-weight: bold;
+  
+}
+
+.chef-stat-item {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: green;
+  margin: 10px;
+  padding: 15px;
+  text-align: left;
+  width: 200px; 
+}
+
+
+/* .online-container {
+  display: flex;
+  align-items: center;
+  margin-left: 5px; 
+}
+
+.online-icon {
+  font-size: 9px; 
+  color: lawngreen; 
+}
+
+.online-text {
+  margin-left: 2px; 
+  font-weight: bold;
+  color:lawngreen;
+} */
+
+h3 {
+  text-align: left;
+  color: black;
+  font-size: 30px;
+  margin-top: 2px;
+  font-weight: bold;
+}
+
+.item-statistics-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: 5px;
+  width: 75%;
+  
+}
+
+.item-statistic {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 5px;
+  width: 150px;
+  border-radius: 10px;
+
+}
+
+.item-name {
+  font-weight: bold;
+  font-size: 15px;
+  color: green;
+}
+
+.item-count {
+  color: black;
+  font-weight: bold;
+  /* font-size: 13px; */
+
+ }
+/* .offline-container {
+  display: flex;
+  align-items: center;
+  color: #dc3545; 
+}
+
+.offline-icon {
+  margin-right: 5px;
+}
+
+.offline-text {
+  font-weight: bold;
+} */ 
+.chef-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px; 
+}
+
+/* chef.component.css */
+.online-container,
+.offline-container {
+  display: flex;
+  align-items: center;
+}
+
+.online-icon,
+.offline-icon {
+  font-size: 12px;
+  margin-right: 5px;
+}
+
+.online-icon {
+  color: green; 
+}
+
+.offline-icon {
+  color: black; 
+}
+
+.online-text,
+.offline-text {
+  font-size: 14px;
+}
+
+.online-text {
+  color: green;
+}
+
+.offline-text {
+  color: black; 
+}
+button {
+  position: fixed;
+  top: 50%; 
+  transform: translateY(-50%); 
+  right: 0;
+  z-index: 900;
+}
+
+.nzTitle{
+  text-align: center;
+  color: black;
+  font-size: 20px;
+  font-weight: bold;
+}
