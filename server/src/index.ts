@@ -13,7 +13,7 @@ import ordersBYHourlyRouter from "./routers/ordersByHourlyRouter";
 import ordersBYWeeklyRouter from "./routers/ordersByWeeklyRouter";
 import ordersBYMonthlyRouter from "./routers/ordersByMonthlyRouter";
 import restaurantUtilizationRouter from "./routers/restaurantUtilizationRouter";
-import { closeMQConnection, connectAndconsumeMQDataForMarketplaceOrders } from "./controllers/order.contoller";
+import { closeMQConnection, connectAndconsumeMQDataForMarketplaceOrders } from "./services/marketplaceOrderMQ.service";
 
 const app: Express = express();
 
@@ -51,7 +51,7 @@ app.use('/utilization', restaurantUtilizationRouter);
 
 async function main() {
   try {
-    // await mongoose.connect(config.MONGOOSE_URI);
+    await mongoose.connect(config.MONGOOSE_URI); // error here
     console.log("db connected mongoose");
 
     // connecting to rabbitmq from here
