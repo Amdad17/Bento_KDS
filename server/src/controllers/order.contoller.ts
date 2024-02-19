@@ -21,8 +21,6 @@ export async function incomingOrder(req: AuthRequest, res: Response) {
     res.status(500).json({ error: "Error in creating a new order." });
   }
 }
-
-
 export async function addChefToOrder (req: AuthRequest, res: Response) {
   try {
     const user = req.user;

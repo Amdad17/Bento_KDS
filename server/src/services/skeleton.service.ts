@@ -1,6 +1,4 @@
-import axios from "axios";
-import { config } from "../config";
-import { IUser } from "../interfaces/user.interface";
+import axios from "axios"; import { config } from "../config"; import { IUser } from "../interfaces/user.interface";
 import { IOrder } from "../interfaces/order/order.interface";
 
 export async function getTokenFromCode (code: string) {
