@@ -8,9 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.changeOrderStatus = exports.findOrdersByRestaurantId = exports.addChefToOrder = exports.incomingOrder = void 0;
+exports.changeOrderStatus = exports.findOrdersByRestaurantId = exports.addChefToOrder = exports.closeMQConnection = exports.connectAndconsumeMQDataForMarketplaceOrders = exports.incomingOrder = void 0;
 const skeleton_service_1 = require("../services/skeleton.service");
+const amqplib_1 = __importDefault(require("amqplib"));
+const __1 = require("..");
+// OLD
 function incomingOrder(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -32,6 +38,51 @@ function incomingOrder(req, res) {
     });
 }
 exports.incomingOrder = incomingOrder;
+const queue = "marketplaceOrder";
+let connection;
+let channel;
+// Connect and Create rabbit mq channel and connection
+function connectAndconsumeMQDataForMarketplaceOrders() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const ampqServer = "amqps://ujuxbuct:HxHHm8XNtbtohKTPHi30fSdILcP9FhGQ@armadillo.rmq.cloudamqp.com/ujuxbuct";
+            connection = yield amqplib_1.default.connect(ampqServer);
+            channel = yield connection.createChannel();
+            yield channel.assertQueue(queue, { durable: false });
+            yield channel.consume(queue, (data) => {
+                if (data) {
+                    // console.log('data has come');
+                    const order = JSON.parse(data.content.toString());
+                    console.log('Order From Queue', order);
+                    // Emit new order with Socket IO.
+                    __1.io.to(order.restaurantId.toString()).emit('incoming-order', order);
+                }
+            }, { noAck: true }); // noAck true for now. Make it false when KDS and INVENTORY not giving any more error
+        }
+        catch (err) {
+            console.log(err);
+        }
+        finally {
+            // if (channel) await channel.close()
+        }
+    });
+}
+exports.connectAndconsumeMQDataForMarketplaceOrders = connectAndconsumeMQDataForMarketplaceOrders;
+// Close rabbitmq connection and channel
+function closeMQConnection() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            if (connection)
+                yield connection.close();
+            if (channel)
+                yield channel.close();
+        }
+        catch (error) {
+            console.log(error);
+        }
+    });
+}
+exports.closeMQConnection = closeMQConnection;
 function addChefToOrder(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {

@@ -13,11 +13,12 @@ import ordersBYHourlyRouter from "./routers/ordersByHourlyRouter";
 import ordersBYWeeklyRouter from "./routers/ordersByWeeklyRouter";
 import ordersBYMonthlyRouter from "./routers/ordersByMonthlyRouter";
 import restaurantUtilizationRouter from "./routers/restaurantUtilizationRouter";
+import { closeMQConnection, connectAndconsumeMQDataForMarketplaceOrders } from "./controllers/order.contoller";
 
 const app: Express = express();
 
 const server = http.createServer(app);
-const io = new Server(server, {
+export const io = new Server(server, {
     cors: {
         origin: "*",
         methods: ["GET", "POST"],
@@ -48,18 +49,26 @@ app.use('/orders-weekly',ordersBYWeeklyRouter);
 app.use('/orders-monthly',ordersBYMonthlyRouter)
 app.use('/utilization', restaurantUtilizationRouter);
 
-
 async function main() {
   try {
-    await mongoose.connect(config.MONGOOSE_URI);
+    // await mongoose.connect(config.MONGOOSE_URI);
     console.log("db connected mongoose");
-    server.listen(config.PORT, () => {
+
+    // connecting to rabbitmq from here
+    await connectAndconsumeMQDataForMarketplaceOrders()
+
+    server.listen(8000, () => {
       console.log("Server running on Port", config.PORT);
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 main();
+
+
+
 
 io.on("connection", (socket) => {
   socket.emit("me", socket.id);
@@ -67,3 +76,11 @@ io.on("connection", (socket) => {
     socket.join(data.restaurantId.toString());
   });
 });
+
+
+// Handle server shutdown. Close MQ Connection
+process.on('SIGINT' , async() =>{
+  console.log('Closing MQ Connection')
+  await closeMQConnection();
+  process.exit(0)
+})
