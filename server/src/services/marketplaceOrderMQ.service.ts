@@ -3,7 +3,7 @@ import { io } from "..";
 
 
 
-const queue = "marketplaceOrder"
+const queue = "marketplaceToKDS"
 let connection: Connection;
 let channel: Channel;
 
