@@ -28,13 +28,11 @@ export async function connectAndconsumeMQDataForMarketplaceOrders() {
 
 
       }
-    }, { noAck: true }) // noAck true for now. Make it false when KDS and INVENTORY not giving any more error
+    }, { noAck: true })
 
   } catch (err) {
     console.log(err);
-  } finally {
-    // if (channel) await channel.close()
-  }
+  } 
 
 }
 
