@@ -11,11 +11,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.changeOrderStatus = exports.findOrdersByRestaurantId = exports.addChefToOrder = exports.incomingOrder = void 0;
 const skeleton_service_1 = require("../services/skeleton.service");
+const utilization_helper_1 = require("../utils/utilization.helper");
 function incomingOrder(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const { user } = req;
-            if (!user)
+            const { user, token } = req;
+            if (!user || !token)
                 return res.status(401).send({ message: 'Unauthorized' });
             const data = req.body;
             console.log('order data from inside controller======', data);
@@ -23,6 +24,8 @@ function incomingOrder(req, res) {
             // Emit new order with Socket IO.
             const io = res.locals.io;
             io.to(data.restaurantId.toString()).emit('incoming-order', data);
+            const utilization = yield (0, utilization_helper_1.handleRestaurantUtilization)(token, data.restaurantId);
+            io.to(data.restaurantId.toString()).emit('utilization', { utilization });
             res.status(201).json(data);
         }
         catch (error) {
@@ -58,7 +61,7 @@ function findOrdersByRestaurantId(req, res) {
             if (!token)
                 return res.status(401).send({ message: "Unauthorized." });
             const orders = yield (0, skeleton_service_1.getAllOrders)(token);
-            res.status(200).json(orders);
+            res.status(200).json({ data: orders });
         }
         catch (error) {
             console.error(error);
@@ -90,6 +93,11 @@ function changeOrderStatus(req, res) {
                     const servedOnTime = totalPrepTime <= actualPrepTime;
                     (0, skeleton_service_1.postChefEfficiencyToHR)(token, { chefId, orderId: order._id, servedOnTime });
                 }
+            }
+            if (status === 'pending' || status === 'preparing') {
+                const utilization = yield (0, utilization_helper_1.handleRestaurantUtilization)(token, user.employeeInformation.restaurantId);
+                const io = res.locals.io;
+                io.to(user.employeeInformation.restaurantId.toString()).emit('utilization', { utilization });
             }
             res.status(200).json(order);
         }

@@ -12,9 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.io = void 0;
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
-const mongoose_1 = __importDefault(require("mongoose"));
 const http_1 = __importDefault(require("http"));
 const socket_io_1 = require("socket.io");
 const orderRouter_1 = __importDefault(require("./routers/orderRouter"));
@@ -27,9 +27,10 @@ const ordersByHourlyRouter_1 = __importDefault(require("./routers/ordersByHourly
 const ordersByWeeklyRouter_1 = __importDefault(require("./routers/ordersByWeeklyRouter"));
 const ordersByMonthlyRouter_1 = __importDefault(require("./routers/ordersByMonthlyRouter"));
 const restaurantUtilizationRouter_1 = __importDefault(require("./routers/restaurantUtilizationRouter"));
+const marketplaceOrderMQ_service_1 = require("./services/marketplaceOrderMQ.service");
 const app = (0, express_1.default)();
 const server = http_1.default.createServer(app);
-const io = new socket_io_1.Server(server, {
+exports.io = new socket_io_1.Server(server, {
     cors: {
         origin: "*",
         methods: ["GET", "POST"],
@@ -38,7 +39,7 @@ const io = new socket_io_1.Server(server, {
 });
 app.use((req, res, next) => {
     // Attach io to app locals
-    res.locals.io = io;
+    res.locals.io = exports.io;
     next();
 });
 app.use((0, cors_1.default)({
@@ -58,19 +59,27 @@ app.use('/utilization', restaurantUtilizationRouter_1.default);
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield mongoose_1.default.connect(config_1.config.MONGOOSE_URI);
+            // await mongoose.connect(config.MONGOOSE_URI);
             console.log("db connected mongoose");
-            server.listen(config_1.config.PORT, () => {
+            // connecting to rabbitmq from here
+            server.listen(8000, () => {
                 console.log("Server running on Port", config_1.config.PORT);
             });
+            yield (0, marketplaceOrderMQ_service_1.connectAndconsumeMQDataForMarketplaceOrders)();
         }
         catch (error) { }
     });
 }
 main();
-io.on("connection", (socket) => {
+exports.io.on("connection", (socket) => {
     socket.emit("me", socket.id);
     socket.on("join", (data) => {
         socket.join(data.restaurantId.toString());
     });
 });
+// Handle server shutdown. Close MQ Connection
+process.on('SIGINT', () => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('Closing MQ Connection');
+    yield (0, marketplaceOrderMQ_service_1.closeMQConnection)();
+    process.exit(0);
+}));
